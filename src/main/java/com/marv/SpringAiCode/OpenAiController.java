@@ -107,4 +107,11 @@ public class OpenAiController {
         return dotProduct * 100 / (Math.sqrt(norm1) * Math.sqrt(norm2));
 
     }
+
+    @PostMapping("/api/product")
+    public String getProducts(@RequestParam String text) {
+
+
+        return "";
+    }
 }
