@@ -1,4 +1,4 @@
-package com.marv.SpringAiCode;
+package com.marv.SpringAiCode.config;
 
 import jakarta.annotation.PostConstruct;
 import org.springframework.ai.document.Document;

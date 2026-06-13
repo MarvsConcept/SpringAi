@@ -1,4 +1,4 @@
-package com.marv.SpringAiCode;
+package com.marv.SpringAiCode.controller;
 
 
 import org.springframework.ai.chat.client.ChatClient;

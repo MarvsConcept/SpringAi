@@ -1,4 +1,4 @@
-package com.marv.SpringAiCode;
+package com.marv.SpringAiCode.config;
 
 import org.springframework.ai.embedding.EmbeddingModel;
 import org.springframework.ai.vectorstore.SimpleVectorStore;
