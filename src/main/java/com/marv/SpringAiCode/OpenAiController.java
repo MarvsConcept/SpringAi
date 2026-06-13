@@ -1,19 +1,29 @@
 package com.marv.SpringAiCode;
 
+
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.memory.InMemoryChatMemoryRepository;
 import org.springframework.ai.chat.memory.MessageWindowChatMemory;
 import org.springframework.ai.chat.model.ChatResponse;
+import org.springframework.ai.chat.prompt.Prompt;
+import org.springframework.ai.chat.prompt.PromptTemplate;
+import org.springframework.ai.embedding.EmbeddingModel;
 import org.springframework.ai.openai.OpenAiChatModel;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 public class OpenAiController {
+
+    @Autowired
+    @Qualifier("openAiEmbeddingModel")
+    private EmbeddingModel embeddingModel;
 
     private ChatClient chatClient;
 
@@ -21,7 +31,7 @@ public class OpenAiController {
         this.chatClient = ChatClient.create(chatModel);
     }
 
-    ChatMemory chatMemory = MessageWindowChatMemory.builder().build();
+//    ChatMemory chatMemory = MessageWindowChatMemory.builder().build();
 
 //    public OpenAiController(ChatClient.Builder builder) {
 //        this.chatClient = builder
@@ -31,7 +41,7 @@ public class OpenAiController {
 //                .build();
 //    }
 
-//    @GetMapping("/api/{message}")
+    @GetMapping("/api/{message}")
     public ResponseEntity<String> getAnswer(@PathVariable String message) {
 
         ChatResponse chatResponse = chatClient
@@ -47,5 +57,34 @@ public class OpenAiController {
                 .getText();
 
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/api/recommend")
+    public String recommend(@RequestParam String type,
+                            @RequestParam String year,
+                            @RequestParam String lang) {
+
+        String tempt = """
+                I want to watch a {type} movie tonight with a good rating,
+                looking for movies around this year {year}.
+                The language i'm looking for is {lang}.
+                Suggest one specific movie and tell me the cast and length of the movie
+                """;
+
+        PromptTemplate promptTemplate = new PromptTemplate(tempt);
+        Prompt prompt = promptTemplate.create(Map.of("type", type, "year", year, "lang", lang));
+
+        String response = chatClient
+                .prompt(prompt)
+                .call()
+                .content();
+
+        return response;
+    }
+
+    @PostMapping("/api/embeddings")
+    public float[] embeddings(@RequestParam String text) {
+
+        return embeddingModel.embed(text);
     }
 }

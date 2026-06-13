@@ -24,7 +24,7 @@ public class OllamaController {
 
     ChatMemory chatMemory = MessageWindowChatMemory.builder().build();
 
-    @GetMapping("/api/{message}")
+//    @GetMapping("/api/{message}")
     public ResponseEntity<String> getAnswer(@PathVariable String message) {
 
         ChatResponse chatResponse = chatClient
@@ -42,7 +42,7 @@ public class OllamaController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/api/recommend")
+//    @PostMapping("/api/recommend")
     public String recommend(@RequestParam String type,
                             @RequestParam String year,
                             @RequestParam String lang) {
